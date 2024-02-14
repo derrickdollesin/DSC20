@@ -1,4 +1,0 @@
-bridge17:17
-bridge2:3
-bridge3:1
-bridge17:17

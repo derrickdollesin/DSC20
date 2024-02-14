@@ -1,2 +1,0 @@
-bridge1:5
-bridge2:0

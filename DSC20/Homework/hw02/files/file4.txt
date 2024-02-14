@@ -1,3 +1,0 @@
-ddollesin@ucsd.py,derrick,dollesin,555,2
-ddollesin@ucsd.edu,derrick,dollesin,376,5
-derdollesin@comcast.net,derrick,dollesin,398,5

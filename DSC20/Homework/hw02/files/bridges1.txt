@@ -1,4 +1,0 @@
-bridge1:5
-bridge2:3
-bridge3:1
-bridge1:4
