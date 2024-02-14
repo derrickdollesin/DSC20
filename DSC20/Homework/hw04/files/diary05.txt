@@ -1,0 +1,14 @@
+asdf
+
+Experiment Results:
+harrada,a,paralyze
+moon blossom,b,healing
+moon blossom,c,invisibility
+moon blossom,d,ethereal
+sunflower,e,fire resistance
+end
+askjfnasd
+askdfnas;lf
+fkasdfas
+dfkasdfasdf
+end
