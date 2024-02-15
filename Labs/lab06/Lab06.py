@@ -27,6 +27,7 @@ def flamestrike_spell(*args):
     """
     return [i**2 * 10 for i in args] 
 
+
 # Question 1.2
 def levitation_incantation(weights, weight_threshold=10):
     """
@@ -47,6 +48,7 @@ def levitation_incantation(weights, weight_threshold=10):
     [22, 33, 44]
     """
     return list(filter(lambda x: x <= weight_threshold, weights))
+
 
 # Question 1.3
 def enchanted_spell_counter(*args, length=15):
@@ -72,6 +74,7 @@ def enchanted_spell_counter(*args, length=15):
     """
     return len(list(filter(lambda x: "Enchanted" in x and len(x) >= length, \
     args)))
+
 
 # Question 2
 def spell_showcase(length_threshold, **kwargs):
@@ -99,6 +102,7 @@ def spell_showcase(length_threshold, **kwargs):
     """
     return {key: sum([enchanted_spell_counter(i, length=length_threshold) for \
     i in value]) for key, value in kwargs.items() }
+
 
 # Question 3
 def level_up(leveling_factor, *args, **kwargs):
@@ -129,7 +133,9 @@ def level_up(leveling_factor, *args, **kwargs):
         ("neville", 175), harry = 50, neville = 30)
     {'harry': 8, 'ron': 5, 'hermione': 8, 'neville': 6}
     """
-    return {i[0]: (i[1] + value)//leveling_factor if i[0] in kwargs else i[1] // leveling_factor for key, value in kwargs.items() for i in args}
+    return {i[0]: (i[1] + kwargs[i[0]])//leveling_factor if i[0] in kwargs \
+    else i[1] // leveling_factor for i in args}
+
 
 # Question 4
 def open_cages(**kwargs):
@@ -154,8 +160,7 @@ def open_cages(**kwargs):
         Returns:
             tuple or string depending on result
 
-    >>> magic = open_cages(Levitation_Incantation = 4, \
-        Enchanted_Charm = 10)
+    >>> magic = open_cages(Levitation_Incantation = 4, Enchanted_Charm = 10)
     >>> magic(1000)
     ('Enchanted_Charm', 'Good Job!')
     >>> magic(6000)
@@ -163,7 +168,22 @@ def open_cages(**kwargs):
     >>> magic(1852)
     'One more round!'
     """
-    return
+    potency = sum([((value)**2 * len(key)) for key, value in kwargs.items()])
+    max_value = list(kwargs.keys())\
+    [list(kwargs.values()).index(max(list(kwargs.values())))]
+    min_value = list(kwargs.keys())\
+    [list(kwargs.values()).index(min(list(kwargs.values())))]
+
+    def magic(threshold):
+        if potency > threshold:
+            return (max_value, "Good Job!")
+        elif potency < threshold:
+            return (min_value, "Try Again!")
+        elif potency == threshold:
+            return "One more round!"
+
+    return magic
+
 
 # Question 5
 def spell_resources(limit, *args, **kwargs):
@@ -188,7 +208,14 @@ def spell_resources(limit, *args, **kwargs):
         moonstone_dust = 3, starlight_petals = 5)
     {'moonstone_dust': 9, 'starlight_petals': 13}
     """
-    return
+    output = {key: limit * value for key, value in kwargs.items()}
+
+    for i in args:
+        if i[0] in kwargs:
+            output[i[0]] = output[i[0]] - i[1]
+
+    return output 
+
 
 # Question 6 (EC, optional)
 def cast_attack_spell(sum_powers_limit, defeat_threshold):
@@ -231,5 +258,35 @@ def cast_attack_spell(sum_powers_limit, defeat_threshold):
     >>> cast_spell(combined, 500)
     'Try again'
     """
-    return
+    def combine_spells(*spells):
+        combined_names = "-".join(sorted([i[0].title() for i in spells]))
+        power_calc = sum([i[1] for i in spells])
+
+        if power_calc > sum_powers_limit:
+            power_calc = sum_powers_limit
+
+        effects = {}
+
+        for i in spells:
+            if i[2] in effects:
+                effects[i[2]] = effects[i[2]] + 1
+            else:
+                effects[i[2]] = 1
+
+        for i in effects.items():
+            if i[1] / len(spells) > 0.5:
+                effect = i[0]
+            else:
+                effect = "neutral"
+
+        return (combined_names, power_calc, effect)
+
+    def cast_spell(combined_spell, sorcerer_hp):
+        if sorcerer_hp - combined_spell[1] <= defeat_threshold:
+            return f"Sorcerer is defeated by {combined_spell[0]} with the \
+{combined_spell[2]} effect."
+        else:
+            return "Try again"
+
+    return combine_spells, cast_spell
     
