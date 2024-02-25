@@ -1,8 +1,8 @@
 """
 DSC 20 Winter 2024, Lab 07
-Name: TODO
-PID: TODO
-Source: TODO
+Name: Derrick Dollesin
+PID: A18133427
+Source: 
 """
 
 # Question 1.1
@@ -23,7 +23,17 @@ def max_recursion(lst):
     8
     """
     # YOUR CODE GOES HERE #
-    return
+    
+    if len(lst) == 1:
+        return lst[0]
+
+    else:
+
+        if lst[0] > lst[1]:
+            return max_recursion([lst[0]] + lst[2:])
+        
+        else:
+            return max_recursion(lst[1:])
 
 
 
@@ -46,14 +56,21 @@ def oldest_dragon(all_dragons):
     ('Skakmat', 17)
     """
     # YOUR CODE GOES HERE #
-    return
+    
+    if len(all_dragons) == 1:
+        return all_dragons[0]
+    else:
+        if all_dragons[0][1] >= all_dragons[1][1]:
+            return oldest_dragon([all_dragons[0]] + all_dragons[2:])
+        else:
+            return oldest_dragon(all_dragons[1:])
 
 
 
 # Question 2
 def dragon_count(dragons):
     """
-    Recursively akes a list of dragon names and return a dictionary recording
+    Recursively takes a list of dragon names and return a dictionary recording
     the frequency of each dragon name.
 
     Args:
@@ -69,7 +86,19 @@ def dragon_count(dragons):
     {}
     """
     # YOUR CODE GOES HERE #
-    return
+    
+    if len(dragons) == 0:
+        return {}
+    
+    remaining = dragon_count(dragons[1:])
+
+    if dragons[0] in remaining:
+        remaining[dragons[0]] = remaining[dragons[0]] + 1
+    else:
+        remaining[dragons[0]] = 1
+
+    return remaining
+
 
 
 # Question 3
@@ -101,7 +130,16 @@ def send_invitations(all_dragons, my_choices):
     ['Dracar', 'Pyrion']
     """
     # YOUR CODE GOES HERE #
-    return
+    
+    if not my_choices:
+        return []
+
+    remaining = send_invitations(all_dragons, my_choices[1:])
+
+    if my_choices[0] not in remaining and my_choices[0] in all_dragons:
+        remaining.append(my_choices[0])
+
+    return remaining
 
 
 # Question 4
@@ -126,7 +164,20 @@ def rsvp(string, sub, i=0, j=0):
     False
     """
     # YOUR CODE GOES HERE #
-    return
+    
+    if len(string) < len(sub):
+        return False
+    elif sub == string:
+        return True
+    elif i == len(string):
+        return False
+
+    remaining = rsvp(string, sub, i=i + 1, j=j + 1)
+
+    if string[i:i+len(sub)] == sub:
+        return True
+    else:
+        return remaining
 
 
 
@@ -156,9 +207,9 @@ class Dragon:
     ''
     """
 
-    greeting = '*****'
+    greeting = 'I arrived from the land of recursion!'
 
-    def __init__(self, name, *****):
+    def __init__(self, name, vocabulary, energy=1000):
         """
         constructor of Dragon
         Args:
@@ -166,24 +217,33 @@ class Dragon:
             vocabulary (list): a list of dragon vocabulary
 
         """
-        self.***** = *****
-        self.***** = *****
-        self.energy = *****
+        self.name = name
+        self.vocabulary = vocabulary
+        self.energy = energy
 
-    def shout(*****, amount):
+    def shout(self, amount):
         """
         The shout action of dragons
 
-        Args:
             amount(int): the amount of words to shout
         """
         # TODO: Implement this method
-        return
+        
+        if amount >= len(self.vocabulary) and not self.energy - 500 < 0:
+            self.energy -= 500
+            return "-".join(self.vocabulary)
 
-    def add_new_word(*****, *****):
+        elif not self.energy - 500 < 0:
+            self.energy -= 500
+            return "-".join(self.vocabulary[0:amount])
+            
+        else:
+            return False
+
+    def add_new_word(self, word):
         """
         add a new word at the beginning of vocacbulary
         Args:
             word (str): the word to add
         """
-        self.vocabulary = *****
+        self.vocabulary = [word] + self.vocabulary
