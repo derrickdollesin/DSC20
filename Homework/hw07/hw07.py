@@ -1,8 +1,8 @@
 """
 DSC 20 Winter 2024 Homework 07
-Name: TODO
-PID: TODO
-Source: TODO
+Name: Derrick Dollesin
+PID: A18133427
+Source: 
 """
 
 # Question 1
@@ -35,7 +35,97 @@ def marketplace(start, market_map, directions, spent=0):
     # Add at least 3 doctests below here #
     """
     # YOUR CODE GOES HERE #
-    return
+
+    # list of available numbers in the map
+    nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+    # finding the current position on the map
+    curr_pos = market_map[start[0]][start[1]]
+
+    # base cases
+    if curr_pos == ".": # you've hit an edge
+        return spent
+
+    elif curr_pos == "x": # you've been scammed
+        return "scammed!"
+
+    elif len(directions) == 0: # you've completed the directions
+
+        # if the last position in a number add to spent
+        if curr_pos in nums:
+            spent += int(curr_pos)
+
+        return spent
+    
+    # creating variables for new locations based on directions
+    mov_up = (start[0] - 1, start[1])
+    mov_down = (start[0] + 1, start[1])
+    mov_left = (start[0], start[1] - 1)
+    mov_right = (start[0], start[1] + 1)
+
+    # finding the current direction you are heading
+    curr_dir = directions[0]
+
+    # conditions for current direction
+    if curr_dir == "U": # going up
+
+        # checking if the current position is a number and adding it to spent
+        if curr_pos in nums:
+            spend = spent + int(curr_pos)
+        else:
+            spend = spent
+
+        # getting the remaining directions recursively
+        remaining = marketplace(mov_up, market_map, directions[1:], \
+        spent=spend)
+
+        # returning the remaining
+        return remaining
+
+    elif curr_dir == "D":
+
+        # checking if the current position is a number and adding it to spent
+        if curr_pos in nums:
+            spend = spent + int(curr_pos)
+        else:
+            spend = spent
+
+        # getting the remaining directions recursively
+        remaining = marketplace(mov_down, market_map, directions[1:], \
+        spent=spend)
+
+        # returning the remaining
+        return remaining
+
+    elif curr_dir == "L":
+
+        # checking if the current position is a number and adding it to spent
+        if curr_pos in nums:
+            spend = spent + int(curr_pos)
+        else:
+            spend = spent
+
+        # getting the remaining directions recursively
+        remaining = marketplace(mov_left, market_map, directions[1:], \
+        spent=spend)
+
+        # returning the remaining
+        return remaining
+
+    elif curr_dir == "R":
+
+        # checking if the current position is a number and adding it to spent
+        if curr_pos in nums:
+            spend = spent + int(curr_pos)
+        else:
+            spend = spent
+
+        # getting the remaining directions recursively
+        remaining = marketplace(mov_right, market_map, directions[1:], \
+        spent=spend)
+
+        # returning the remaining
+        return remaining
         
 
 # Question 2  (EXTRA CREDIT)
