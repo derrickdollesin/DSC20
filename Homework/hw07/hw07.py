@@ -42,6 +42,16 @@ def marketplace(start, market_map, directions, spent=0):
     30
 
     # Add at least 3 doctests below here #
+
+    >>> directions = []
+    >>> marketplace((1, 1), market_map, directions)
+    5
+    >>> directions = ["U", "D", "L", "R", "L", "R"]
+    >>> marketplace((5, 13), market_map, directions)
+    4
+    >>> directions = ["R", "D"]
+    >>> marketplace((3, 6), market_map, directions)
+    15
     """
     # YOUR CODE GOES HERE #
 
