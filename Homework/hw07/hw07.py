@@ -8,10 +8,19 @@ Source:
 # Question 1
 def marketplace(start, market_map, directions, spent=0):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    Walks through a map based on given directions and returns the amount of 
+    money spent
+
+    Args:
+        start: a tuple representing the starting position on the map
+        market_map: a list of strings (all same size) made up to look like a \
+                    map
+        directions: a list of directions made up of 'U', 'D', 'L', and 'R'
+        spent: initialized to 0, the number of money spent as an int
+
+    Returns:
+        the amount (as an int) of money spent, or if landed on a 'x' - \
+        'scammed!'
 
     >>> market_map = [
     ... "...............",
@@ -128,25 +137,43 @@ def marketplace(start, market_map, directions, spent=0):
         return remaining
         
 
-# Question 2  (EXTRA CREDIT)
-def palindromes(word):
-    """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+# # Question 2  (EXTRA CREDIT)
+# def palindromes(word):
+#     """
+#     ##############################################################
+#     # TODO: Replace this block of comments with your own         #
+#     # method description and add at least 3 more doctests below. #
+#     ##############################################################
 
-    >>> palindromes("aaa")
-    3
-    >>> palindromes("abcba")
-    2
-    >>> palindromes("ababaa")
-    5
+#     >>> palindromes("aaa")
+#     3
+#     >>> palindromes("abcba")
+#     2
+#     >>> palindromes("ababaa")
+#     5
 
-    # Add at least 3 doctests below here #
-    """
-    # YOUR CODE GOES HERE #
-    return
+#     # Add at least 3 doctests below here #
+#     """
+#     # YOUR CODE GOES HERE #
+    
+#     def is_palindrome(message):
+
+#         if not message:
+#             return False
+#         elif len(message) == 1:
+#             return True
+#         elif len(message) == 2 and message[0] == message[-1]:
+#             return True
+
+#         remaining = is_palindrome(message[1:-1])
+
+#         if message[0] == message[-1]:
+#             return remaining
+#         else:
+#             return False
+
+
+
 
 
 # Question 3
@@ -180,24 +207,33 @@ def doctests_q3():
     return
 
 class EventTracker:
-    event = 'TODO'
+    event = 'midterm'
 
     def __init__(self, event_month):
-        pass
+        self.event_month = event_month
 
-    #@ TODO: what kind of method is it?
+    @classmethod
     def change_event(cls, new_event):
-        pass
+        cls.event = new_event
 
-    #@ TODO: what kind of method is it?
+    @staticmethod
     def extract_month(date):
-        pass
+        if date[1] == "-":
+            return int(date[0])
+        else:
+            return int(date[0]+date[1])
 
     def months_left(self, date):
-        pass
+        month_num = self.extract_month(date)
+        month_diff = self.event_month - month_num
+
+        if month_diff < 0:
+            return f"You missed {EventTracker.event}."
+        else:
+            return f"{month_diff} months left to {EventTracker.event}."
 
     def change_event_month(self, new_month):
-        pass
+        self.event_month = new_month
 
 
 # Question 4
@@ -250,7 +286,38 @@ class Notebook:
     Implementation of Notebook
     """
     # YOUR CODE GOES HERE #
-    pass
+    
+    description = "This notebook is to keep track of encountered people and \
+animals."
+
+    @staticmethod
+    def edit_description():
+        return "This notebook only has 1 purpose - there is no need to modify \
+its description!"
+
+    def __init__(self, title, author, tip, encounters):
+        self.title = title
+        self.author = author
+        self.tip = tip
+        self.encounters = encounters
+
+    def info(self):
+        return f"{self.author} has spent {self.tip} months in Pythonia and has\
+ encountered {len(self.encounters["people"])} people and \
+{len(self.encounters["animals"])} animals. These are noted in '{self.title}'."
+
+    def get_people(self):
+        return self.encounters["people"]
+
+    def get_animals(self):
+        return self.encounters["animals"]
+
+    def new_encounter(self, new_type, new_add):
+        if new_add in self.encounters[new_type]:
+            return "Already encountered"
+        else:
+            self.encounters[new_type] = self.encounters[new_type] + [new_add]
+            return True
 
 
 # Question 5
@@ -323,6 +390,56 @@ They are able to sell their wares in Pythonia, Garthon.
     1
 
     # Add your own doctests below
+
+    >>> america = Kingdom('America')
+
+    >>> derrick = Merchant("CSGO Professional", {"coaching": [40, 5000], \
+    "boosting": [60, 9000]}, 1_000_000_000, ["Pythonia", "America"])
+    >>> print(derrick)
+    CSGO Professional has brought coaching, boosting. They are able to sell \
+their wares in Pythonia, America.
+    >>> derrick.sell('coaching', 2)
+    'CSGO Professional sold 2 of coaching.'
+    >>> derrick.restock('coaching', 2)
+    'CSGO Professional restocked 2 of coaching.'
+    >>> derrick.travel_to_kingdom(america)
+    True
+
+    >>> print(america)
+    Kingdom America has 1 active merchants.
+    >>> america.get_total_cash()
+    1000010000
+    >>> print(america.promote_market())
+    CSGO Professional sold 40 of coaching. 
+    CSGO Professional sold 60 of boosting. 
+    <BLANKLINE>
+    >>> america.temp_ban(derrick)
+    True
+
+    >>> vietnam = Kingdom('Vietnam')
+
+    >>> chantal = Merchant("CSGO Amateur", {"coaching": [40, 5], \
+    "boosting": [60, 9]}, 1_000, ["Pythonia", "Vietnam"])
+    >>> print(chantal)
+    CSGO Amateur has brought coaching, boosting. They are able to sell \
+their wares in Pythonia, Vietnam.
+    >>> chantal.sell('coaching', 2)
+    'CSGO Amateur sold 2 of coaching.'
+    >>> chantal.restock('coaching', 2)
+    'CSGO Amateur restocked 2 of coaching.'
+    >>> chantal.travel_to_kingdom(vietnam)
+    True
+
+    >>> print(vietnam)
+    Kingdom Vietnam has 1 active merchants.
+    >>> vietnam.get_total_cash()
+    1010
+    >>> print(vietnam.promote_market())
+    CSGO Amateur sold 40 of coaching. 
+    CSGO Amateur sold 60 of boosting. 
+    <BLANKLINE>
+    >>> vietnam.temp_ban(derrick)
+    False
     """
 
 class Merchant:
@@ -331,6 +448,7 @@ class Merchant:
     """
 
     # TODO: Add class attribute(s) here
+    id_count = 1
 
     def __init__(
         self, merchant_type, stock, cash, kingdom_licenses
@@ -345,59 +463,103 @@ class Merchant:
         kingdom_licenses (list): list of kingdoms the merchant can sell in
         """
         # YOUR CODE GOES HERE #
-        pass
+        self.merchant_type = merchant_type
+        self.stock = stock 
+        self.cash = cash 
+        self.kingdom_licenses = kingdom_licenses
+        self.id = Merchant.id_count
+        Merchant.id_count += 1
 
     def get_type(self):
         """ Getter for name attribute """
         # YOUR CODE GOES HERE #
-        pass
+        return self.merchant_type
 
     def get_stock(self):
         """ Getter for the stock attribute """
         # YOUR CODE GOES HERE #
-        pass
+        return self.stock
 
     def get_cash(self):
         """ Getter for cash attribute """
         # YOUR CODE GOES HERE #
-        pass
+        return self.cash
 
     def get_kingdom_licenses(self):
         """ Getter for kingdom_licenses attribute """
         # YOUR CODE GOES HERE #
-        pass
+        return self.kingdom_licenses
     
     def get_id(self):
         """ Getter for id attribute """
         # YOUR CODE GOES HERE #
-        pass
+        return self.id 
 
     def __str__(self):
         """ String representation of Merchant """
         # YOUR CODE GOES HERE #
-        pass
+        return f"{self.merchant_type} has brought \
+{", ".join(list(self.stock.keys()))}. They are able to sell their wares in \
+{", ".join(self.kingdom_licenses)}."
 
     def sell(self, product, count):
         """
         Updates merchant's cash and product amount when a sale is completed
+
+        Args:
+            product: string name of product to sell
+            count: int number of units to sell
+
+        Returns:
+            a string indicating whether the transaction was successful
         """
         # YOUR CODE GOES HERE #
-        pass
+        if self.stock[product][0] >= count:
+            self.stock[product][0] -= count
+            self.cash += (self.stock[product][1] * count)
+            return f"{self.merchant_type} sold {count} of {product}."
+        else:
+            return f"{self.merchant_type} does not have enough {product} to \
+sell."
 
     def restock(self, product, count):
         """
         Adds more product to the Merchant's stock for them to sell
+
+        Args:
+            product: a string representing the name of the product to restock
+            count: the amount to restock
+
+        Returns:
+            a string indicating whether the restock was succesful
         """
         # YOUR CODE GOES HERE #
-        pass
+        assert product in self.stock
+
+        self.stock[product][0] = self.stock[product][0] + count
+        return f"{self.merchant_type} restocked {count} of {product}."
 
     def travel_to_kingdom(self, kingdom):
         """
         Returns a boolean indicating whether the merchant can travel to the 
         specified kingdom
+
+        Args:
+            kingdom: kingdom object
+
+        Returns:
+            True if merchant added to kingdom's merchant list,
+            False otherwise
         """
         # YOUR CODE GOES HERE #
-        pass
+        assert isinstance(kingdom, Kingdom)
+
+        if self not in kingdom.get_curr_merchants() and kingdom.get_name() \
+        in self.kingdom_licenses:
+            kingdom.new_merchant(self)
+            return True
+        else:
+            return False
 
 
 class Kingdom:
@@ -415,47 +577,98 @@ class Kingdom:
         name (str): name of the kingdom
         """
         # YOUR CODE GOES HERE #
-        pass
+        assert name != ""
+
+        self.name = name 
+        self.curr_merchants = []
+
+        assert not self.curr_merchants
+
 
     def get_name(self):
         """ Getter of Kingdom's name """
         # YOUR CODE GOES HERE #
-        pass
+        return self.name 
 
     def get_curr_merchants(self):
         """ Getter of current active merchants """
         # YOUR CODE GOES HERE #
-        pass
+        return self.curr_merchants
 
     def __str__(self):
         """ String representation of the kingdom """
         # YOUR CODE GOES HERE #
-        pass
+        return f"Kingdom {self.name} has {len(self.curr_merchants)} active \
+merchants."
     
     def new_merchant(self, merchant):
         """
         Adds a new merchant to the kingdom
+
+        Args:
+            merchant: merchant object
+
+        Returns:
+            True if merchant added to kingdom merchant list
+            False if not
         """
         # YOUR CODE GOES HERE #
-        pass
+        if merchant not in self.curr_merchants:
+            self.curr_merchants.append(merchant)
+
+            return True
+        else:
+            return False
        
     def temp_ban(self, merchant):
         """
         Temporarilty bans a certain merchant
+
+        Args:
+            merchant: merchant object 
+
+        Returns:
+            True if merchant successfully banned
+            False if not
         """
         # YOUR CODE GOES HERE #
-        pass
+        assert isinstance(merchant, Merchant)
+
+        if merchant in self.curr_merchants:
+            self.curr_merchants.remove(merchant)
+            return True
+        else:
+            return False
 
     def get_total_cash(self):
         """
+        Args:
+            self: kingdom instance
+
         Returns the total amount of cash the merchants have
         """
         # YOUR CODE GOES HERE #
-        pass
+        return sum([i.get_cash() for i in self.curr_merchants])
 
     def promote_market(self):
         """
         Sell out every market in the kingdom
+
+        Args:
+            self: kindom instance
+
+        Returns:
+            output message of items sold
         """
-        # YOUR CODE GOES HERE #
-        pass
+        result = ""
+
+        for merchant in self.curr_merchants:
+            for product, stock_info in merchant.get_stock().items():
+                count_to_sell = stock_info[0]
+                if count_to_sell > 0:
+                    result += f"{merchant.get_type()} sold {count_to_sell} of \
+{product}. \n"
+                    merchant.sell(product, count_to_sell)
+
+        return result
+
