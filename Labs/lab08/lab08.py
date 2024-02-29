@@ -1,8 +1,8 @@
 """
 DSC 20 Winter 2024 Lab 08
-Name: TODO
-PID: TODO
-Source: TODO
+Name: Derrick Dollesin
+PID: A18133427
+Source: 
 """
 
 # Question 1
@@ -17,11 +17,11 @@ def q1_answers():
     True
     """
     # REPLACE ... WITH YOUR ANSWERS (1-9)
-    return [...]
+    return [2, 5, 6, 7]
 
 # Question 2
 # TODO: Uncomment structure below and fix the code
-#class Item:
+class Item:
     """
     >>> p = Item("Magic Wand", 50, 100)
     >>> p.name
@@ -48,62 +48,63 @@ def q1_answers():
     >>> ep.price
     121.5
     """
-    #def __init__(self, name, price, stock):
-    #    self.name = name
-    #    self.price = price
-    #    self.stock = stock
+    def __init__(self, name, price, stock):
+        self.name = name
+        self.price = price
+        self.stock = stock
 
-    #def display_item_info(self):
-    #    return f"{name} - Price: ${price}, Stock: {stock}"
+    def display_item_info(self):
+        return f"{self.name} - Price: ${self.price}, Stock: {self.stock}"
 
-    #def apply_discount(self, discount_percent):
-    #    """
-    #    Applies a discount to the item's price.
-    #    """
-    #    price -= (discount_percent / 100) * price
+    def apply_discount(self, discount_percent):
+        """
+        Applies a discount to the item's price.
+        """
+        self.price -= (discount_percent / 100) * self.price
 
-    #def reduce_stock(self, quantity):
-    #    """
-    #    Reduces the stock of the item by the given quantity.
-    #    If the quantity is greater than the current stock, set the stock to 0.
-    #    """
-    #    stock = max(0, stock - quantity)
+    def reduce_stock(self, quantity):
+        """
+        Reduces the stock of the item by the given quantity.
+        If the quantity is greater than the current stock, set the stock to 0.
+        """
+        self.stock = max(0, self.stock - quantity)
 
-    #def restock(self, quantity):
-    #    """
-    #    Increases the stock of the item by the given quantity.
-    #    """
-    #    stock += quantity
+    def restock(self, quantity):
+        """
+        Increases the stock of the item by the given quantity.
+        """
+        self.stock += quantity
 
-#class EnchantedItem(Item):
+class EnchantedItem(Item):
 
-    #def __init__(self, name, price, stock, enchantment_level):
-    #    super(name, price, stock)
-    #    enchantment_level = enchantment_level
+    def __init__(self, name, price, stock, enchantment_level):
+        super().__init__(name, price, stock)
+        self.enchantment_level = enchantment_level
 
-    #def apply_magical_boost(self, boost_factor):
-    #    """
-    #    Applies a magical boost to the item's enchantment level.
-    #    """
-    #    enchantment_level += boost_factor
+    def apply_magical_boost(self, boost_factor):
+        """
+        Applies a magical boost to the item's enchantment level.
+        """
+        self.enchantment_level += boost_factor
 
-    #def display_item_info(self):
-    #    """
-    #    Displays information about the enchanted item, including its 
-    #        enchantment level.
-    #    """
-    #    basic_info = display_item_info()
-    #    return f"{basic_info}, Enchantment Level: {enchantment_level}"
+    def display_item_info(self):
+        """
+        Displays information about the enchanted item, including its 
+            enchantment level.
+        """
+        basic_info = super().display_item_info()
+        return f"{basic_info}, Enchantment Level: \
+{self.enchantment_level}"
 
-    #def set_discount(self, discount_percent):
-    #    """
-    #    Applies a discount to the enchanted item's price, with an 
-    #    additional enchantment bonus. Applies the regular discount 
-    #       first and then calculates the bonus discount. 
-    #    """
-    #    super().
-    #    bonus_discount = enchantment_level / 2
-    #    price -= (bonus_discount / 100) * price
+    def set_discount(self, discount_percent):
+        """
+        Applies a discount to the enchanted item's price, with an 
+        additional enchantment bonus. Applies the regular discount 
+           first and then calculates the bonus discount. 
+        """
+        super().apply_discount(discount_percent)
+        bonus_discount = self.enchantment_level / 2
+        self.price -= (bonus_discount / 100) * self.price
 
 
 
@@ -139,7 +140,39 @@ class Product:
     Product ID: 2, Name: Casual Shirt, Price: $30.00, Quantity Available: 550
     Size: M
     """
-    pass
+    
+    def __init__(self, product_id, name, price, quantity):
+        self.product_id = product_id
+        self.name = name 
+        self.price = round(price, 2)
+        self.quantity = quantity
+
+    def get_product_description(self):
+        prices = "%.2f" % self.price
+
+        print(f"Product ID: {self.product_id}, Name: {self.name}, \
+Price: ${prices}, Quantity Available: {self.quantity}")
+       
+
+class ElectronicProduct(Product):
+
+    def __init__(self, product_id, name, price, quantity, warranty_period):
+        super().__init__(product_id, name, price, quantity)
+        self.warranty_period = warranty_period
+
+    def get_product_description(self):
+        super().get_product_description()
+        print(f"Warranty: {self.warranty_period}")
+
+class ClothingProduct(Product):
+
+    def __init__(self, product_id, name, price, quantity, size):
+        super().__init__(product_id, name, price, quantity)
+        self.size = size
+
+    def get_product_description(self):
+        super().get_product_description()
+        print(f"Size: {self.size}")
 
 class ShoppingCart:
     """
@@ -177,4 +210,36 @@ class ShoppingCart:
     >>> discounted_cart.calculate_total()
     927.0
     """
-    pass 
+    def __init__(self):
+        self.cart_items = []
+
+    def add_to_cart(self, product):
+        product.quantity -= 1
+        self.cart_items.append(product) 
+
+    def display_cart(self):
+        print("Shopping Cart:")
+        for i in self.cart_items:
+            i.get_product_description()
+
+    def calculate_total(self):
+        total = 0
+
+        for i in self.cart_items:
+            total += i.price
+
+        return float(total)
+
+
+class DiscountedShoppingCart(ShoppingCart):
+
+    def __init__(self, discount_percentage):
+        super().__init__()
+        self.discount_percentage = discount_percentage
+
+    def apply_discount(self):
+        for product in self.cart_items:
+            discounted_price = product.price - (product.price * \
+            self.discount_percentage / 100)
+            product.price = round(discounted_price, 2)
+
