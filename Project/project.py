@@ -1,7 +1,7 @@
 """
 DSC 20 Project
-Name(s): TODO
-PID(s):  TODO
+Name(s): Derrick Dollesin
+PID(s):  A18133427
 Sources: None
 """
 
@@ -73,10 +73,24 @@ class RGBImage:
         2
         """
         # YOUR CODE GOES HERE #
-        # Raise exceptions here
-        self.pixels = ...
-        self.num_rows = ...
-        self.num_cols = ...
+        # Raise exceptions here #
+
+        if not isinstance(pixels, list) or \
+        not pixels or \
+        not all([isistance(row, list) and row and len(row) == len(pixels[0]) for row in pixels]) or \
+        not all(isinstance(column, list) and len(column) == 3 for row in pixels for column in row):
+            raise TypeError("Invalid pixels format. It should be a 3-dimensional list.")
+
+        for row in pixels:
+            for column in row:
+                for intensity in column:
+                    if not isinstance(intensity, int) or intensity < 0 or intensity > 255:
+                        raise ValueError("Intensity values must be integers between 0 and 255.")
+
+        self.pixels = pixels
+        self.num_rows = len(self.pixels)
+        self.num_cols = len(self.pixels[0])
+
 
     def size(self):
         """
