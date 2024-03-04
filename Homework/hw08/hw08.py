@@ -99,7 +99,7 @@ class ArtsAndCrafts(ImaginaryParty):
         """
         Invite a guest to the ArtsAndCrafts party if supplies are available.
         """
-        if self.supplies >= 1:
+        if self.supplies > 0:
             self.supplies -= 1
             print(self)
         else:
