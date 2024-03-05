@@ -75,22 +75,26 @@ class RGBImage:
         # YOUR CODE GOES HERE #
         # Raise exceptions here #
 
-        if not isinstance(pixels, list) or \
-        not pixels or \
-        not all([isistance(row, list) and row and len(row) == len(pixels[0]) for row in pixels]) or \
-        not all(isinstance(column, list) and len(column) == 3 for row in pixels for column in row):
-            raise TypeError("Invalid pixels format. It should be a 3-dimensional list.")
-
-        for row in pixels:
-            for column in row:
-                for intensity in column:
-                    if not isinstance(intensity, int) or intensity < 0 or intensity > 255:
-                        raise ValueError("Intensity values must be integers between 0 and 255.")
-
+        # instance attributes of an RGBImage Object
         self.pixels = pixels
-        self.num_rows = len(self.pixels)
-        self.num_cols = len(self.pixels[0])
+        self.num_rows = len(pixels) # number of elements in a pixel list
+        self.num_cols = len(pixels[0]) # number of elements in one element of
+                                       # a pixel list
 
+        # raise error for invalid types
+        if not isinstance(self.pixels, list)\
+        or not len(self.pixels) >= 1 \
+        or not all([isinstance(row, list) and len(row) >= 1 for row in \
+        self.pixels]) \
+        or not all([len(row) == len(self.pixels[0]) for row in self.pixels])\
+        or not all([isinstance(pixel, list) and len(pixel) == 3 for row in \
+        self.pixels for pixel in row]):
+            raise TypeError()
+
+        # raise error for invalid values
+        if not all([value <= 255 and value >= 0 for row in self.pixels for \
+        pixel in row for value in pixel]):
+            raise ValueError()
 
     def size(self):
         """
@@ -105,6 +109,9 @@ class RGBImage:
         (1, 2)
         """
         # YOUR CODE GOES HERE #
+
+        # returns the number of rows, columns in an object
+        return (self.num_rows, self.num_cols)
 
     def get_pixels(self):
         """
@@ -129,6 +136,13 @@ class RGBImage:
         """
         # YOUR CODE GOES HERE #
 
+        # creating a deep copy of a pixel
+        output = [[[intensity for intensity in column] for column in row] for \
+        row in self.pixels]
+
+        # returning the output
+        return output
+         
     def copy(self):
         """
         Returns a copy of this RGBImage object
@@ -145,6 +159,9 @@ class RGBImage:
         True
         """
         # YOUR CODE GOES HERE #
+
+        # returning the copy of an RGBImage instance
+        return RGBImage(self.get_pixels())
 
     def get_pixel(self, row, col):
         """
@@ -167,6 +184,20 @@ class RGBImage:
         (255, 255, 255)
         """
         # YOUR CODE GOES HERE #
+
+        # raise error for invalid types
+        if not isinstance(row, int) or not isinstance(col, int):
+            raise TypeError()
+
+        # raise error for invalid values
+        if row < 0 or row >= self.num_rows or col < 0 or col >= self.num_cols:
+            raise ValueError()
+
+        # create the pixel tuple
+        color = tuple(self.pixels[row][col])
+
+        # return the pixel color
+        return color
 
     def set_pixel(self, row, col, new_color):
         """
@@ -191,6 +222,26 @@ class RGBImage:
         """
         # YOUR CODE GOES HERE #
 
+        # raise error for invalid type of row or column
+        if not isinstance(row, int) or not isinstance(col, int):
+            raise TypeError()
+
+        # raise error for invalid value of row or column
+        if row < 0 or row >= self.num_rows or col < 0 or col >= self.num_cols:
+            raise ValueError()
+
+        # raise error for invalid type of new color tuple
+        if not isinstance(new_color, tuple) or not len(new_color) == 3 or not \
+        all([isinstance(i, int) for i in new_color]):
+            raise TypeError()
+
+        # raise error for invalid value of new color tuple elements
+        if not all([i <= 255 for i in new_color]):
+            raise ValueError()
+
+        # set the pixel to new color
+        self.pixels[row][col] = [new_color[i] if new_color[i] >= 0 else \
+        self.pixels[row][col][i] for i in range(3)]
 
 # Part 2: Image Processing Template Methods #
 class ImageProcessingTemplate:
@@ -209,7 +260,9 @@ class ImageProcessingTemplate:
         0
         """
         # YOUR CODE GOES HERE #
-        self.cost = ...
+
+        # ImageProcessingTemplate instance variables
+        self.cost = 0
 
     def get_cost(self):
         """
@@ -222,6 +275,9 @@ class ImageProcessingTemplate:
         50
         """
         # YOUR CODE GOES HERE #
+
+        # return cost instance
+        return self.cost
 
     def negate(self, image):
         """
@@ -253,6 +309,7 @@ class ImageProcessingTemplate:
         >>> img_save_helper('img/out/test_image_32x32_negate.png', img_negate)# 6
         """
         # YOUR CODE GOES HERE #
+        [image.set_pixel(row, column,  map(lambda x: 255 - x, [for row in image.pixels for column in row for intensity in column])) for row in image.pixels for column in row]
 
     def grayscale(self, image):
         """
