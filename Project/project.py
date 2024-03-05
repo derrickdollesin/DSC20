@@ -243,6 +243,7 @@ class RGBImage:
         self.pixels[row][col] = [new_color[i] if new_color[i] >= 0 else \
         self.pixels[row][col][i] for i in range(3)]
 
+
 # Part 2: Image Processing Template Methods #
 class ImageProcessingTemplate:
     """
@@ -309,7 +310,13 @@ class ImageProcessingTemplate:
         >>> img_save_helper('img/out/test_image_32x32_negate.png', img_negate)# 6
         """
         # YOUR CODE GOES HERE #
-        [image.set_pixel(row, column,  map(lambda x: 255 - x, [for row in image.pixels for column in row for intensity in column])) for row in image.pixels for column in row]
+        
+        # inverting each intensity value
+        negate_pixels = [[[255 - intensity for intensity in col] for col in \
+        row] for row in image.pixels]
+
+        # returning the negate 
+        return RGBImage(negate_pixels)
 
     def grayscale(self, image):
         """
@@ -327,6 +334,13 @@ class ImageProcessingTemplate:
         """
         # YOUR CODE GOES HERE #
 
+        # turning each pixel to grayscale
+        grayscale_pixels = [[[sum(col) // 3 for intensity in col] for col in \
+        row] for row in image.pixels]
+
+        # returning the grayscale image
+        return RGBImage(grayscale_pixels)
+
     def rotate_180(self, image):
         """
         Returns a rotated version of the given image
@@ -343,6 +357,15 @@ class ImageProcessingTemplate:
         """
         # YOUR CODE GOES HERE #
 
+        # rotating each pixel 180 degrees by subtracting each pixel row and 
+        # column by the number of rows and columns
+        rotate_pixels = [[list(image.get_pixel((image.num_rows - 1 - row), \
+        (image.num_cols - 1 -col))) for col in range(image.num_cols)] for row \
+        in range(image.num_rows)]
+
+        # returning the rotated image
+        return RGBImage(rotate_pixels)
+
     def get_average_brightness(self, image):
         """
         Returns the average brightness for the given image
@@ -353,6 +376,13 @@ class ImageProcessingTemplate:
         86
         """
         # YOUR CODE GOES HERE #
+
+        # calculating the total number of pixels using length times width
+        num_pixels = image.num_rows * image.num_cols
+
+        # returning the brightness of the image
+        return sum([sum([sum(col) // 3 for col in row]) for row in \
+        image.pixels]) // num_pixels
 
     def adjust_brightness(self, image, intensity):
         """
@@ -368,6 +398,21 @@ class ImageProcessingTemplate:
         """
         # YOUR CODE GOES HERE #
 
+        # adjusting brightness of each pixel by some intensity value
+        blur_pixels = [[[i + intensity if i + intensity <= 255 else 255 for i \
+        in col] for col in row] for row in image.pixels]
+
+        # raise error for invalid intensity type
+        if not isinstance(intensity, int):
+            raise TypeError()
+
+        # raise error for invalid intensity value
+        if intensity > 255 or intensity < -255:
+            raise ValueError()
+
+        # return adjusted brightness image
+        return RGBImage(blur_pixels)
+
     def blur(self, image):
         """
         Returns a new image with the pixels blurred
@@ -382,6 +427,215 @@ class ImageProcessingTemplate:
         """
         # YOUR CODE GOES HERE #
 
+        # total rows and columns in the image
+        rows = image.num_rows
+        cols = image.num_cols
+
+        # final blurred picture pixel list
+        blur_pixels = []
+
+        # loop through each pixel row in image
+        for row in range(rows):
+
+            # column list for each row
+            column = []
+
+            # loop through each column and calculate rgb values
+            for col in range(cols):
+
+                # current pixel and place in the image
+                curr_pixel = image.get_pixel(row, col)
+                curr_place = (row, col)
+
+                # calculate the blur value for each intensity value and append 
+                # the pixel to column
+
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~ Corners ~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+                # top left
+                if curr_place == (0, 0): 
+                    r_avg = (curr_pixel[0] + image.get_pixel(row + 1, col)[0] \
+                    + image.get_pixel(row + 1, col + 1)[0] + \
+                    image.get_pixel(row, col + 1)[0]) // 4
+                    g_avg = (curr_pixel[1] + image.get_pixel(row + 1, col)[1] \
+                    + image.get_pixel(row + 1, col + 1)[1] + \
+                    image.get_pixel(row, col + 1)[1]) // 4
+                    b_avg = (curr_pixel[2] + image.get_pixel(row + 1, col)[2] \
+                    + image.get_pixel(row + 1, col + 1)[2] + \
+                    image.get_pixel(row, col + 1)[2]) // 4
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # top right
+                elif curr_place == (0, cols - 1):
+                    r_avg = (curr_pixel[0] + image.get_pixel(row, col - 1)[0] \
+                    + image.get_pixel(row + 1, col - 1)[0] + \
+                    image.get_pixel(row + 1, col)[0]) // 4
+                    g_avg = (curr_pixel[1] + image.get_pixel(row, col - 1)[1] \
+                    + image.get_pixel(row + 1, col - 1)[1] + \
+                    image.get_pixel(row + 1, col)[1]) // 4
+                    b_avg = (curr_pixel[2] + image.get_pixel(row, col - 1)[2] \
+                    + image.get_pixel(row + 1, col - 1)[2] + \
+                    image.get_pixel(row + 1, col)[2]) // 4
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # bottom left
+                elif curr_place == (rows - 1, 0): 
+                    r_avg = (curr_pixel[0] + image.get_pixel(row, col + 1)[0] \
+                    + image.get_pixel(row - 1, col + 1)[0] + \
+                    image.get_pixel(row - 1, col)[0]) // 4
+                    g_avg = (curr_pixel[1] + image.get_pixel(row, col + 1)[1] \
+                    + image.get_pixel(row - 1, col + 1)[1] + \
+                    image.get_pixel(row - 1, col)[1]) // 4
+                    b_avg = (curr_pixel[2] + image.get_pixel(row, col + 1)[2] \
+                    + image.get_pixel(row - 1, col + 1)[2] + \
+                    image.get_pixel(row - 1, col)[2]) // 4
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # bottom right
+                elif curr_place == (rows - 1, cols - 1): 
+                    r_avg = (curr_pixel[0] + image.get_pixel(row, col - 1)[0] \
+                    + image.get_pixel(row - 1, col - 1)[0] + \
+                    image.get_pixel(row - 1, col)[0]) // 4
+                    g_avg = (curr_pixel[1] + image.get_pixel(row, col - 1)[1] \
+                    + image.get_pixel(row - 1, col - 1)[1] + \
+                    image.get_pixel(row - 1, col)[1]) // 4
+                    b_avg = (curr_pixel[2] + image.get_pixel(row, col - 1)[2] \
+                    + image.get_pixel(row - 1, col - 1)[2] + \
+                    image.get_pixel(row - 1, col)[2]) // 4
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # ~~~~~~~~~~~~~~~~~~~~~~~~ Top Wall ~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+                elif row == 0:
+                    r_avg = (curr_pixel[0] + image.get_pixel(row, col - 1)[0] \
+                    + image.get_pixel(row + 1, col - 1)[0] + \
+                    image.get_pixel(row + 1, col)[0] + image.get_pixel(row + \
+                    1, col + 1)[0] + image.get_pixel(row, col + 1)[0]) // 6
+                    g_avg = (curr_pixel[1] + image.get_pixel(row, col - 1)[1] \
+                    + image.get_pixel(row + 1, col - 1)[1] + \
+                    image.get_pixel(row + 1, col)[1] + image.get_pixel(row + \
+                    1, col + 1)[1] + image.get_pixel(row, col + 1)[1]) // 6
+                    b_avg = (curr_pixel[2] + image.get_pixel(row, col - 1)[2] \
+                    + image.get_pixel(row + 1, col - 1)[2] + \
+                    image.get_pixel(row + 1, col)[2] + image.get_pixel(row + \
+                    1, col + 1)[2] + image.get_pixel(row, col + 1)[2]) // 6
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # ~~~~~~~~~~~~~~~~~~~~~~~ Bottom Wall ~~~~~~~~~~~~~~~~~~~~~~~ #
+
+                elif row == rows - 1:
+                    r_avg = (curr_pixel[0] + image.get_pixel(row, col - 1)[0] \
+                    + image.get_pixel(row - 1, col - 1)[0] + \
+                    image.get_pixel(row - 1, col)[0] + image.get_pixel(row - \
+                    1, col + 1)[0] + image.get_pixel(row, col + 1)[0]) // 6
+                    g_avg = (curr_pixel[1] + image.get_pixel(row, col - 1)[1] \
+                    + image.get_pixel(row - 1, col - 1)[1] + \
+                    image.get_pixel(row - 1, col)[1] + image.get_pixel(row - \
+                    1, col + 1)[1] + image.get_pixel(row, col + 1)[1]) // 6
+                    b_avg = (curr_pixel[2] + image.get_pixel(row, col - 1)[2] \
+                    + image.get_pixel(row - 1, col - 1)[2] + \
+                    image.get_pixel(row - 1, col)[2] + image.get_pixel(row - \
+                    1, col + 1)[2] + image.get_pixel(row, col + 1)[2]) // 6
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # ~~~~~~~~~~~~~~~~~~~~~~~ Right Wall ~~~~~~~~~~~~~~~~~~~~~~~ #
+
+                elif col == cols - 1:   
+                    r_avg = (curr_pixel[0] + image.get_pixel(row - 1, col)[0] \
+                    + image.get_pixel(row - 1, col - 1)[0] + \
+                    image.get_pixel(row, col - 1)[0] + image.get_pixel(row + \
+                    1, col - 1)[0] + image.get_pixel(row + 1, col)[0]) // 6
+                    g_avg = (curr_pixel[1] + image.get_pixel(row - 1, col)[1] \
+                    + image.get_pixel(row - 1, col - 1)[1] + \
+                    image.get_pixel(row, col - 1)[1] + image.get_pixel(row + \
+                    1, col - 1)[1] + image.get_pixel(row + 1, col)[1]) // 6
+                    b_avg = (curr_pixel[2] + image.get_pixel(row - 1, col)[2] \
+                    + image.get_pixel(row - 1, col - 1)[2] + \
+                    image.get_pixel(row, col - 1)[2] + image.get_pixel(row + \
+                    1, col - 1)[2] + image.get_pixel(row + 1, col)[2]) // 6
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # ~~~~~~~~~~~~~~~~~~~~~~~~ Left Wall ~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+                elif col == 0:
+                    r_avg = (curr_pixel[0] + image.get_pixel(row - 1, col)[0] \
+                    + image.get_pixel(row - 1, col + 1)[0] + \
+                    image.get_pixel(row, col + 1)[0] + image.get_pixel(row + \
+                    1, col + 1)[0] + image.get_pixel(row + 1, col)[0]) // 6
+                    g_avg = (curr_pixel[1] + image.get_pixel(row - 1, col)[1] \
+                    + image.get_pixel(row - 1, col + 1)[1] + \
+                    image.get_pixel(row, col + 1)[1] + image.get_pixel(row + \
+                    1, col + 1)[1] + image.get_pixel(row + 1, col)[1]) // 6
+                    b_avg = (curr_pixel[2] + image.get_pixel(row - 1, col)[2] \
+                    + image.get_pixel(row - 1, col + 1)[2] + \
+                    image.get_pixel(row, col + 1)[2] + image.get_pixel(row + \
+                    1, col + 1)[2] + image.get_pixel(row + 1, col)[2]) // 6
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+                # ~~~~~~~~~~~~~~~~~~~~~~ Anywhere Else ~~~~~~~~~~~~~~~~~~~~~~ #
+
+                else:   
+                    r_avg = (curr_pixel[0] + \
+                    image.get_pixel(row - 1, col)[0] + \
+                    image.get_pixel(row - 1, col + 1)[0] + \
+                    image.get_pixel(row, col + 1)[0] + \
+                    image.get_pixel(row + 1, col + 1)[0] + \
+                    image.get_pixel(row + 1, col)[0] + \
+                    image.get_pixel(row + 1, col - 1)[0] + \
+                    image.get_pixel(row, col - 1)[0] + \
+                    image.get_pixel(row - 1, col - 1)[0]) // 9
+                    g_avg = (curr_pixel[1] + \
+                    image.get_pixel(row - 1, col)[1] + \
+                    image.get_pixel(row - 1, col + 1)[1] + \
+                    image.get_pixel(row, col + 1)[1] + \
+                    image.get_pixel(row + 1, col + 1)[1] + \
+                    image.get_pixel(row + 1, col)[1] + \
+                    image.get_pixel(row + 1, col - 1)[1] + \
+                    image.get_pixel(row, col - 1)[1] + \
+                    image.get_pixel(row - 1, col - 1)[1]) // 9
+                    b_avg = (curr_pixel[2] + \
+                    image.get_pixel(row - 1, col)[2] + \
+                    image.get_pixel(row - 1, col + 1)[2] + \
+                    image.get_pixel(row, col + 1)[2] + \
+                    image.get_pixel(row + 1, col + 1)[2] + \
+                    image.get_pixel(row + 1, col)[2] + \
+                    image.get_pixel(row + 1, col - 1)[2] + \
+                    image.get_pixel(row, col - 1)[2] + \
+                    image.get_pixel(row - 1, col - 1)[2]) // 9
+
+                    pixel = [r_avg, g_avg, b_avg]
+
+                    column.append(pixel)
+
+            # append each column to the final pixel list
+            blur_pixels.append(column)
+
+        # return the blurred image
+        return RGBImage(blur_pixels)
 
 # Part 3: Standard Image Processing Methods #
 class StandardImageProcessing(ImageProcessingTemplate):
