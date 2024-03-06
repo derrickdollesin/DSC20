@@ -214,15 +214,19 @@ class Firework:
         """
         Launch a firework, updates noise_made and returns string
         """
+        check_even = 2
+        noise_was_made = 150
+        noise_wasnt_made = 30
+
         self.launches += 1
 
-        if self.launches % 2 != 0:
-            self.noise_made += 150
-            noise = 150
+        if self.launches % check_even != 0:
+            self.noise_made += noise_was_made
+            noise = noise_was_made
             outcome = "successful"
         else:
-            self.noise_made += 30
-            noise = 30
+            self.noise_made += noise_wasnt_made
+            noise = noise_wasnt_made
             outcome = "dud"
 
         return f"The {self.brand} firework was launched and it was a {outcome}\
@@ -254,7 +258,9 @@ class Firecracker(Firework):
         """
         Calculates the number of noise complaints received
         """
-        num_complaints = self.noise_made // 250 - self.noise_complaints
+        limit = 250
+
+        num_complaints = self.noise_made // limit - self.noise_complaints
 
         if num_complaints > 0:
             self.noise_complaints += num_complaints 
@@ -278,7 +284,9 @@ class RomanCandle(Firecracker):
         
         output = super().calculate_complaints()
 
-        if self.noise_complaints // 4 > self.cops_called:
+        num_times = 4 
+
+        if self.noise_complaints // num_times > self.cops_called:
             self.cops_called += 1
             return f"COPS CALLED!!\n{output}"
         else:
@@ -300,9 +308,14 @@ def create_raffle_tix(letters, numbers):
     ['X1', 'Y1']
     """
     tickets = []
+
     for letter in letters:
         for number in numbers:
-            tickets.append(letter + number)  # add try-except
+            try:
+                tickets.append(letter + number)  # add try-except
+            except TypeError:
+                continue
+
     return tickets
 
 
@@ -321,8 +334,14 @@ def special_requests(*filepaths):
     random.txt not found
     """
     for filepath in filepaths:
-        cur_file = open(filepath, "r")  # add try-except
-        cur_file.close()
+        try:
+            cur_file = open(filepath, "r")  # add try-except
+            cur_file.close()
+        except FileNotFoundError:
+            print(f"{filepath} not found")
+        else:
+            print(f"{filepath} opened successfully")
+
         
 
 # Question 3.3
@@ -347,7 +366,15 @@ def create_placards(first_names, last_names):
     """
     names = []
     for i in range(len(first_names)):
-        names.append(first_names[i] + " " + last_names[i]) # add try-except
+        try:
+            names.append(first_names[i] + " " + last_names[i]) # add try-except
+        except IndexError as e:
+            print("<class 'IndexError'>")
+            continue
+        except TypeError as e:
+            print("<class 'TypeError'>")
+            continue
+
     return names
 
 
@@ -389,8 +416,52 @@ def validate_resolution(resolution, commitments):
     TypeError: resolution is not a string
 
     # Add your own doctests below
+
+    >>> validate_resolution("Hello", [1, 2, 3])
+    Traceback (most recent call last):
+    ...
+    TypeError: non-string item in commitments at index 0, 1, 2
+    >>> validate_resolution("idk what", ["I commit to", "I commit to"])
+    'New Years resolution validated'
+    >>> validate_resolution("idk", ["I commit t"])
+    Traceback (most recent call last):
+    ...
+    ValueError: commitment does not start with 'I commit to'
     """
-    return
+    final_char = 11
+
+    if not isinstance(resolution, str):
+        raise TypeError("resolution is not a string")
+
+    elif not isinstance(commitments, list):
+        raise TypeError("commitments is not a list")
+
+    elif not resolution:
+        raise TypeError("resolution is empty")
+
+    elif not all([i == " " or i.isalpha() for i in resolution]):
+        raise ValueError("non-alpha character in resolution")
+
+    elif not commitments:
+        raise TypeError("commitments is empty")
+
+    elif not all([isinstance(i, str) for i in commitments]):
+
+        non_strings = [i for i in range(len(commitments)) if not \
+        isinstance(commitments[i], str)]
+
+        as_strings = [str(i) for i in non_strings]
+
+        invalid_pos = ", ".join(as_strings)
+
+        raise TypeError(f"non-string item in commitments at index \
+{invalid_pos}")
+
+    elif not all([i[0:final_char] == "I commit to" for i in commitments]):
+        raise ValueError("commitment does not start with 'I commit to'")
+
+    else:
+        return "New Years resolution validated"
 
 
 # Question 5 (Extra Credit)
@@ -407,4 +478,5 @@ def flatten(nested_input):
     >>> flatten([(1.1, "A"), [2, (3.3, "B", 4)], 5, ("C", 6, [7, "D"]), 8.8])
     [2, 4, 5, 6, 7]
     """
+
     return
