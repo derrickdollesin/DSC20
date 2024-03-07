@@ -118,6 +118,7 @@ class Javanian():
 
     def __init__(self, xp_levels):
         self.xp_levels = xp_levels
+        self.xp_total = sum(list(xp_levels.values()))
     
     # Question 2.2 (String Representations)
     # YOUR CODE GOES HERE #
@@ -134,6 +135,17 @@ class Javanian():
     
     # Question 2.3 (Greater than Method)
     # YOUR CODE GOES HERE #
+    def __gt__(self, other):
+        if isinstance(other, Javanian):
+            return self.xp_total > other.xp_total
+
+        elif isinstance(other, int):
+            return self.xp_total > other
+
+        else:
+            raise TypeError() 
     
     # Question 2.4 (Length Method)
     # YOUR CODE GOES HERE #
+    def __len__(self):
+        return len(self.xp_levels)
