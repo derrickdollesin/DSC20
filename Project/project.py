@@ -653,7 +653,8 @@ class StandardImageProcessing(ImageProcessingTemplate):
         0
         """
         # YOUR CODE GOES HERE #
-        self.cost = ...
+        self.cost = 0
+        self.num_free = 0
 
     def negate(self, image):
         """
@@ -676,6 +677,18 @@ class StandardImageProcessing(ImageProcessingTemplate):
         """
         # YOUR CODE GOES HERE #
 
+        # negate the image using parent function
+        negate_image = super().negate(image)
+
+        # update cost depending on whether a coupon was used
+        if self.num_free > 0:
+            self.num_free -= 1
+        else:
+            self.cost += 5
+
+        # return image
+        return negate_image
+
     def grayscale(self, image):
         """
         Returns a grayscale copy of the given image
@@ -683,11 +696,35 @@ class StandardImageProcessing(ImageProcessingTemplate):
         """
         # YOUR CODE GOES HERE #
 
+        # grayscale image using parent function
+        grayscale_image = super().grayscale(image)
+
+        # update cost based on coupon
+        if self.num_free > 0:
+            self.num_free -= 1
+        else:
+            self.cost += 6
+
+        # return image
+        return grayscale_image
+
     def rotate_180(self, image):
         """
         Returns a rotated version of the given image
         """
         # YOUR CODE GOES HERE #
+
+        # rotate image using parent function
+        rotate_180_image = super().rotate_180(image)
+
+        # update cost based on coupon
+        if self.num_free > 0:
+            self.num_free -= 1
+        else:
+            self.cost += 10
+
+        # return image
+        return rotate_180_image
 
     def adjust_brightness(self, image, intensity):
         """
@@ -695,11 +732,35 @@ class StandardImageProcessing(ImageProcessingTemplate):
         """
         # YOUR CODE GOES HERE #
 
+        # adjust brightness using parent function
+        adjust_brightness_image = super().adjust_brightness(image, intensity)
+
+        # update cost based on coupon
+        if self.num_free > 0:
+            self.num_free -= 1
+        else:
+            self.cost += 1
+
+        # return image
+        return adjust_brightness_image
+
     def blur(self, image):
         """
         Returns a new image with the pixels blurred
         """
         # YOUR CODE GOES HERE #
+
+        # blur using parent function
+        blur_image = super().blur(image)
+
+        # update cost based on coupon
+        if self.num_free > 0:
+            self.num_free -= 1
+        else:
+            self.cost += 5
+
+        # return image
+        return blur_image
 
     def redeem_coupon(self, amount):
         """
@@ -716,6 +777,16 @@ class StandardImageProcessing(ImageProcessingTemplate):
         """
         # YOUR CODE GOES HERE #
 
+        # set instance variable to amount
+        self.num_free += amount
+
+        # raise an error if type of amount isn't int
+        if not isinstance(amount, int):
+            raise TypeError()
+
+        # raise an error if the amount is less than one
+        if amount < 0:
+            raise ValueError()
 
 # Part 4: Premium Image Processing Methods #
 class PremiumImageProcessing(ImageProcessingTemplate):
@@ -733,7 +804,7 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         50
         """
         # YOUR CODE GOES HERE #
-        self.cost = ...
+        self.cost = 50
 
     def chroma_key(self, chroma_image, background_image, color):
         """
