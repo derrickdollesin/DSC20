@@ -193,9 +193,14 @@ def decode_password(hint):
         if len(word) == 0:
             hint[i] = 0
         else:
+            minimum = 96
+            maximum = 123
+            num_chars = 97
+            divisor = 3
+
             first_char = ord(word[0].lower())
-            if 96 <= first_char <= 123:
-                hint[i] = (first_char - 97) // 3 + 1
+            if minimum <= first_char <= maximum:
+                hint[i] = (first_char - num_chars) // divisor + 1
             else:
                 hint[i] = 0
 
