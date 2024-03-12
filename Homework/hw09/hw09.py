@@ -27,7 +27,7 @@ def q2_tf_answers():
     """
     # YOUR CODE GOES HERE #
 
-    answers = []
+    answers = [True, True, False, False, True]
     
     return answers
 
@@ -56,8 +56,14 @@ def reverse_list(lst):
     # Add your own doctests below
     """
     # YOUR CODE GOES HERE #
-    return
 
+    original_list = list(lst)
+    step = -1
+    
+    for i in range(len(lst)):
+        lst[i] = original_list[step - i]
+
+    return None
 
 # Question 4
 def swap_lists(list_1, list_2):
@@ -87,8 +93,15 @@ def swap_lists(list_1, list_2):
     # Add your own doctests below
     """
     # YOUR CODE GOES HERE #
-    return
 
+    for i in range(len(list_1)):
+        n1 = list_1[i]
+        n2 = list_2[i]
+
+        list_1[i] = n2
+        list_2[i] = n1
+
+    return None
 
 # Question 5
 def decode_password(hint):
@@ -112,7 +125,19 @@ def decode_password(hint):
     # Add your own doctests below
     """
     # YOUR CODE GOES HERE #
-    return
+    
+    for i in range(len(hint)):
+        word = hint[i]
+
+        if len(word) == 0:
+            hint[i] = 0
+        else:
+            first_char = ord(word[0].lower())
+            if 96 <= first_char <= 123:
+                hint[i] = (first_char - 97) // 3 + 1
+            else:
+                hint[i] = 0
+
 
 
 # Question 6 (Extra Credit)
