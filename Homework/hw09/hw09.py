@@ -138,11 +138,11 @@ def swap_lists(list_1, list_2):
     # YOUR CODE GOES HERE #
 
     for i in range(len(list_1)):
-        n1 = list_1[i]
-        n2 = list_2[i]
+        number_1 = list_1[i]
+        number_2 = list_2[i]
 
-        list_1[i] = n2
-        list_2[i] = n1
+        list_1[i] = number_2
+        list_2[i] = number_1
 
     return None
 
