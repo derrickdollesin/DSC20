@@ -18,7 +18,6 @@ def q1_tf_answers():
 
     return answers
 
-
 # Question 2
 def q2_tf_answers():
     """
@@ -27,18 +26,20 @@ def q2_tf_answers():
     """
     # YOUR CODE GOES HERE #
 
-    answers = [True, True, False, False, True]
+    answers = [True, False, True, False, True]
     
     return answers
-
 
 # Question 3
 def reverse_list(lst):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    Reverses a the order of elements in a list.
+
+    Args:
+        lst: a list
+
+    Returns:
+        Nothing - Mutates the given list.
 
     >>> x = [3, 2, 4, 5, 1]
     >>> reverse_list(x)
@@ -54,6 +55,22 @@ def reverse_list(lst):
     [1]
 
     # Add your own doctests below
+
+    >>> x = ['H', 'e', 'l', 'l', 'o']
+    >>> reverse_list(x)
+    >>> x
+    ['o', 'l', 'l', 'e', 'H']
+
+    >>> x = ['H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd']
+    >>> reverse_list(x)
+    >>> x
+    ['d', 'l', 'r', 'o', 'W', 'o', 'l', 'l', 'e', 'H']
+    
+    >>> x = ['!', 2, 900, "~"]
+    >>> reverse_list(x)
+    >>> x
+    ['~', 900, 2, '!']
+
     """
     # YOUR CODE GOES HERE #
 
@@ -68,11 +85,14 @@ def reverse_list(lst):
 # Question 4
 def swap_lists(list_1, list_2):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    Swaps the elements in two lists.
 
+    Args:
+        list_1: a list
+        list_2: a second list
+
+    Returns:
+        Nothing - swaps the elements in each list.
 
     >>> list_1 = [1, 2]
     >>> list_2 = [3, 4]
@@ -91,6 +111,29 @@ def swap_lists(list_1, list_2):
     [4, 2, 6, 8, 90, 45]
 
     # Add your own doctests below
+
+    >>> list_5 = ["H", "e", "l", "l", "o"]
+    >>> list_6 = ["W", "o", "r", "l", "d"]
+    >>> swap_lists(list_5, list_6)
+    >>> print(list_5)
+    ['W', 'o', 'r', 'l', 'd']
+    >>> print(list_6)
+    ['H', 'e', 'l', 'l', 'o']
+    
+    >>> list_7 = [0, "!"]
+    >>> list_8 = ['3', 3]
+    >>> swap_lists(list_7, list_8)
+    >>> print(list_7)
+    ['3', 3]
+    >>> print(list_8)
+    [0, '!']
+
+    >>> swap_lists(list_5, list_6)
+    >>> print(list_5)
+    ['H', 'e', 'l', 'l', 'o']
+    >>> print(list_6)
+    ['W', 'o', 'r', 'l', 'd']
+
     """
     # YOUR CODE GOES HERE #
 
@@ -106,11 +149,13 @@ def swap_lists(list_1, list_2):
 # Question 5
 def decode_password(hint):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    Decodes a given list of words.
 
+    Args:
+        hint: a list of words to be decoded
+
+    Returns:
+        Nothing - Converts each word to a number based on it's Unicode value
 
     >>> hint = ["Pythonia", "is", "an", "excellent", "Place"]
     >>> decode_password(hint)
@@ -123,6 +168,22 @@ def decode_password(hint):
     [3, 7, 7, 7, 0, 3, 0]
 
     # Add your own doctests below
+
+    >>> hint = []
+    >>> decode_password(hint)
+    >>> print(hint)
+    []
+
+    >>> hint = ['a', 'd', 'g', 'j', 'm', 'p', 's']
+    >>> decode_password(hint)
+    >>> print(hint)
+    [1, 2, 3, 4, 5, 6, 7]
+
+    >>> hint = ['d', 'o', 'l', 'l', 'e', 's', 'i', 'n']
+    >>> decode_password(hint)
+    >>> print(hint)
+    [2, 5, 4, 4, 2, 7, 3, 5]
+
     """
     # YOUR CODE GOES HERE #
     
@@ -137,8 +198,6 @@ def decode_password(hint):
                 hint[i] = (first_char - 97) // 3 + 1
             else:
                 hint[i] = 0
-
-
 
 # Question 6 (Extra Credit)
 def move_non_wishes(seq):
