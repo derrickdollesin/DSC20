@@ -824,6 +824,44 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         """
         # YOUR CODE GOES HERE #
 
+        # raise error for invalid image type
+        if not isinstance(chroma_image, RGBImage) or not \
+        isinstance(background_image, RGBImage):
+            raise TypeError()
+
+        # raise error for invalid image sizes
+        if chroma_image.size() != background_image.size():
+            raise ValueError()
+
+        # number of rows and columns
+        rows = chroma_image.num_cols
+        cols = chroma_image.num_rows
+
+        # create output list for RGBImage
+        chroma = []
+
+        # loop through the image and replace any specific color with the \
+        # background image pixels
+        for row in range(rows):
+
+            # create columns list for output
+            columns = []
+
+            for col in range(cols):
+
+                # check each pixel to match the specified color
+                if chroma_image.get_pixel(row, col) == color:
+                    columns.append(list(background_image.get_pixel(row, col)))
+                else:
+                    columns.append(list(chroma_image.get_pixel(row, col)))
+
+            # append each pixel to the correct row
+            chroma.append(columns)
+
+        # return chroma image
+        return RGBImage(chroma)
+
+
     def sticker(self, sticker_image, background_image, x_pos, y_pos):
         """
         Returns a copy of the background image where the sticker image is
@@ -851,6 +889,18 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         >>> img_save_helper('img/out/test_image_32x32_sticker.png', img_combined)
         """
         # YOUR CODE GOES HERE #
+
+        if not isinstance(sticker_image, RGBImage) or \
+        not isinstance(background_image, RGBImage) or \
+        not isinstance(x_pos, int) or not isinstance(y_pos, int):
+            raise TypeError()
+
+        if sticker_image.num_rows > background_image.num_rows or \
+        sticker_image.num_cols > background_image.num_cols:
+            raise ValueError()
+
+
+
 
     def edge_highlight(self, image):
         """
