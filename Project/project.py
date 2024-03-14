@@ -861,7 +861,6 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         # return chroma image
         return RGBImage(chroma)
 
-
     def sticker(self, sticker_image, background_image, x_pos, y_pos):
         """
         Returns a copy of the background image where the sticker image is
@@ -890,44 +889,42 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         """
         # YOUR CODE GOES HERE #
 
+        # raise error if images are invalid types
         if not isinstance(sticker_image, RGBImage) or \
         not isinstance(background_image, RGBImage):
             raise TypeError()
 
+        # raise error if sticker image is larger than background image
         if sticker_image.num_rows > background_image.num_rows or \
         sticker_image.num_cols > background_image.num_cols:
             raise ValueError()
 
+        # raise error if x, y are invalid types
         if not isinstance(x_pos, int) or not isinstance(y_pos, int):
             raise TypeError()
 
-        if sticker_image.num_cols + x_pos > background_image.num_cols or \
-        x_pos - sticker_image.num_cols < 0 or \
-        sticker_image.num_rows + y_pos > background_image.num_rows or \
-        y_pos - sticker_image.num_rows < 0:
+        # raise error if sticker can't fit into a position 
+        if x_pos < 0 or y_pos < 0 or x_pos + sticker_image.size()[0] > \
+        background_image.size()[0] or y_pos + sticker_image.size()[1] > \
+        background_image.size()[1]:
             raise ValueError()
 
+        # the background pixels
         background = background_image.get_pixels()
 
-        back_rows = background_image.num_rows
-        back_cols = background_image.num_cols
-        stick_rows = sticker_image.num_rows
-        stick_cols = sticker_image.num_cols
+        rows = sticker_image.num_rows
+        cols = sticker_image.num_cols
 
-        for back_row in range(y_pos, back_rows):
+        # loop through sticker pixel and replace background with sticker
+        for row in range(rows):
+            for col in range(cols):
 
-            for back_col in range(x_pos, back_cols):
+                # changing the background image to include sticker
+                background[row + y_pos][col + x_pos] = \
+                list(sticker_image.get_pixel(row, col))
 
-                for stick_row in range(stick_rows):
-
-                    for stick_col in range(stick_cols):
-
-                        background[back_row][back_col] = sticker_image.get_pixel(stick_row, stick_col)
-
+        # return final image
         return RGBImage(background)
-
-
-
 
     def edge_highlight(self, image):
         """
@@ -944,6 +941,45 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         """
         # YOUR CODE GOES HERE #
 
+        single_intenstity = [[sum(col) // len(col) for col in row] for row in \
+        image.pixels]
+
+        kernel = [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]
+
+        edge_image = []
+
+        for i in range(len(single_intenstity)):
+            
+            temp = []
+            
+            new_row = [0 for p in range(len(single_intenstity))]
+            
+            for j in range(len(single_intenstity[0])):
+                
+                for k in range(-1, 2):
+                    
+                    for h in range(-1, 2):
+                        
+                        if (i + k < 0):
+                            continue
+                        if (j + h < 0):
+                            continue
+                        if (i + k >= len(single_intenstity)):
+                            continue
+                        if (j + h >= len(single_intenstity)):
+                            continue
+
+                        new_row[j] += single_intenstity[k + i][h + j] * \
+                        kernel[k + 1][h + 1]
+
+                new_pixel = [max(0, min(255, new_row[j])), \
+                max(0, min(255, new_row[j])), max(0, min(255, new_row[j]))]
+
+                temp.append(new_pixel)
+
+            edge_image.append(temp)
+
+        return RGBImage(edge_image)
 
 # Part 5: Image KNN Classifier #
 class ImageKNNClassifier:
@@ -957,11 +993,19 @@ class ImageKNNClassifier:
         """
         # YOUR CODE GOES HERE #
 
+        self.k_neighbors = k_neighbors
+        self.data = []
+
     def fit(self, data):
         """
         Stores the given set of data and labels for later
         """
         # YOUR CODE GOES HERE #
+
+        if len(data) < self.k_neighbors:
+            raise ValueError()
+
+        data.data = data
 
     def distance(self, image1, image2):
         """
@@ -974,6 +1018,31 @@ class ImageKNNClassifier:
         15946.312896716909
         """
         # YOUR CODE GOES HERE #
+
+        # if not isinstance(image1, RGBImage) or not isinstance(image2, RGBImage):
+        #     raise TypeError()
+
+        # if image1.size() != image2.size():
+        #     raise ValueError()
+
+        # rows = image1.num_rows
+        # cols = image1.num_cols
+
+        # euclidean_distance = [ \
+        #     [ \
+        #         ( \
+        #             ((image1.get_pixel(row, col)[0] + image2.get_pixel(row, col)[0]) ** 2) + \
+        #             ((image1.get_pixel(row, col)[1] + image2.get_pixel(row, col)[1]) ** 2) + \
+        #             ((image1.get_pixel(row, col)[2] + image2.get_pixel(row, col)[2]) ** 2)  \
+        #         ) ** (1/2) \
+
+        #         for col in range(cols) \
+        #     ] \
+
+        #     for row in range(rows) \
+        # ]
+
+        # return euclidean_distance
 
     def vote(self, candidates):
         """
