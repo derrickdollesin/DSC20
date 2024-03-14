@@ -891,13 +891,40 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         # YOUR CODE GOES HERE #
 
         if not isinstance(sticker_image, RGBImage) or \
-        not isinstance(background_image, RGBImage) or \
-        not isinstance(x_pos, int) or not isinstance(y_pos, int):
+        not isinstance(background_image, RGBImage):
             raise TypeError()
 
         if sticker_image.num_rows > background_image.num_rows or \
         sticker_image.num_cols > background_image.num_cols:
             raise ValueError()
+
+        if not isinstance(x_pos, int) or not isinstance(y_pos, int):
+            raise TypeError()
+
+        if sticker_image.num_cols + x_pos > background_image.num_cols or \
+        x_pos - sticker_image.num_cols < 0 or \
+        sticker_image.num_rows + y_pos > background_image.num_rows or \
+        y_pos - sticker_image.num_rows < 0:
+            raise ValueError()
+
+        background = background_image.get_pixels()
+
+        back_rows = background_image.num_rows
+        back_cols = background_image.num_cols
+        stick_rows = sticker_image.num_rows
+        stick_cols = sticker_image.num_cols
+
+        for back_row in range(y_pos, back_rows):
+
+            for back_col in range(x_pos, back_cols):
+
+                for stick_row in range(stick_rows):
+
+                    for stick_col in range(stick_cols):
+
+                        background[back_row][back_col] = sticker_image.get_pixel(stick_row, stick_col)
+
+        return RGBImage(background)
 
 
 
