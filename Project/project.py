@@ -1005,7 +1005,7 @@ class ImageKNNClassifier:
         if len(data) < self.k_neighbors:
             raise ValueError()
 
-        data.data = data
+        self.data = data
 
     def distance(self, image1, image2):
         """
@@ -1019,30 +1019,29 @@ class ImageKNNClassifier:
         """
         # YOUR CODE GOES HERE #
 
-        # if not isinstance(image1, RGBImage) or not isinstance(image2, RGBImage):
-        #     raise TypeError()
+        if not isinstance(image1, RGBImage) or not \
+        isinstance(image2, RGBImage):
+            raise TypeError()
 
-        # if image1.size() != image2.size():
-        #     raise ValueError()
+        if image1.size() != image2.size():
+            raise ValueError()
 
-        # rows = image1.num_rows
-        # cols = image1.num_cols
+        rows = image1.num_rows
+        cols = image1.num_cols
 
-        # euclidean_distance = [ \
-        #     [ \
-        #         ( \
-        #             ((image1.get_pixel(row, col)[0] + image2.get_pixel(row, col)[0]) ** 2) + \
-        #             ((image1.get_pixel(row, col)[1] + image2.get_pixel(row, col)[1]) ** 2) + \
-        #             ((image1.get_pixel(row, col)[2] + image2.get_pixel(row, col)[2]) ** 2)  \
-        #         ) ** (1/2) \
+        euclidean_distance = sum( \
+            [ \
+                ( \
+                    image1.pixels[row][col][value] - \
+                    image2.pixels[row][col][value] \
+                ) ** 2 \
+                for row in range(rows) \
+                for col in range(cols) \
+                for value in range(3) \
+            ] \
+        ) ** (1/2)
 
-        #         for col in range(cols) \
-        #     ] \
-
-        #     for row in range(rows) \
-        # ]
-
-        # return euclidean_distance
+        return euclidean_distance
 
     def vote(self, candidates):
         """
@@ -1054,6 +1053,8 @@ class ImageKNNClassifier:
         """
         # YOUR CODE GOES HERE #
 
+        return max(candidates)
+
     def predict(self, image):
         """
         Predicts the label of the given image using the labels of
@@ -1063,6 +1064,14 @@ class ImageKNNClassifier:
         """
         # YOUR CODE GOES HERE #
 
+        if not self.data:
+            raise ValueError()
+
+        prediction = self.vote([i[1] for i in sorted([( \
+        self.distance(picture[0], image), picture[1]) for picture in \
+        self.data], key=lambda x: x[0])[0:self.k_neighbors]])
+
+        return prediction
 
 def knn_tests(test_img_path):
     """
